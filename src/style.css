@@ -19,7 +19,7 @@ body {
 }
 
 .control-label {
-  @apply  block text-lg font-bold text-gray-700 mb-2 ;
+  @apply  block text-base font-bold text-gray-700 mb-2 ;
 }
 
 .control-input {

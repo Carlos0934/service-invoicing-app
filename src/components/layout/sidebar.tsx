@@ -1,19 +1,14 @@
 import {
   NewspaperIcon,
   UserGroupIcon,
-  Squares2X2Icon,
-  ChevronLeftIcon,
   WrenchScrewdriverIcon,
-  PowerIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../../config/routes";
 const items = [
-  { name: "Dashboard", icon: Squares2X2Icon, link: Routes.Dashboard },
-  { name: "Facturas", icon: NewspaperIcon, link: Routes.Invoices },
-  { name: "Clientes", icon: UserGroupIcon, link: Routes.Customers },
-  { name: "Productos", icon: WrenchScrewdriverIcon, link: Routes.Products },
+  { name: "Invoices", icon: NewspaperIcon, link: Routes.Invoices },
+  { name: "Customers", icon: UserGroupIcon, link: Routes.Customers },
+  { name: "Items", icon: WrenchScrewdriverIcon, link: Routes.Products },
 ];
 
 export const Sidebar = () => {

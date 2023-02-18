@@ -16,7 +16,7 @@ export interface TableProps<T> {
 
 export const Table = <T extends Entity>({ data, columns }: TableProps<T>) => {
   return (
-    <div className="inline-block  w-full overflow-hidden h-[65vh]  bg-gray-100 shadow rounded-lg  ">
+    <div className="inline-block  w-full overflow-hidden h-[65vh]  bg-gray-100 shadow rounded-lg  overflow-y-auto ">
       <table className="border-collapse w-full   ">
         <thead className="bg-gray-50 border-b text-gray-800 ">
           <tr>

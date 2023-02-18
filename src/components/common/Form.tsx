@@ -44,7 +44,7 @@ export const Form = <T extends Entity>({
           className="btn bg-blue-400  text-gray-100 hover:bg-blue-500 transition w-full max-w-sm mx-auto mt-4  disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
         >
-          Guardar
+          {methods.formState.isSubmitting ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

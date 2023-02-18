@@ -58,12 +58,14 @@ export const ModuleView = <T extends Entity>({
             }}
             className="btn"
           >
-            Editar
+            Edit
           </button>
 
           <button
             onClick={async () => {
-              const ok = await ask("¿Está seguro de eliminar este registro?");
+              const ok = await ask(
+                "Are you sure you want to delete this record?"
+              );
               console.log(ok);
               if (!ok || !item.id) return;
 
@@ -71,7 +73,7 @@ export const ModuleView = <T extends Entity>({
             }}
             className="btn text-red-400"
           >
-            Eliminar
+            Delete
           </button>
         </div>
       ),
@@ -85,11 +87,11 @@ export const ModuleView = <T extends Entity>({
       setTab={setTab}
       tabs={[
         {
-          name: "Todos",
+          name: "All",
           component: <Table data={data} columns={columns} />,
         },
         {
-          name: "Formulario",
+          name: "Form",
           component: (
             <Form
               title={getFormTitle(selectedRow)}

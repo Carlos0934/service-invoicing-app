@@ -1,26 +1,23 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface AutoCompleteProps<T> {
-  options?: {
-    value: T;
-    label: string;
-  }[];
+  data: T[];
   onChange: (value: T | null) => void;
   onQueryChange: (query: string) => void;
 
   value?: T | null;
   query: string;
-
+  getLabel: (value: T) => string;
   placeholder?: string;
   className?: string;
   filter?: (value: T) => boolean;
 }
 
 export function AutoComplete<T>({
-  options = [],
-
+  data,
+  getLabel,
   onChange,
   value,
   placeholder,
@@ -29,12 +26,21 @@ export function AutoComplete<T>({
   onQueryChange: onChangeQuery,
   query,
 }: AutoCompleteProps<T>) {
+  const options = useMemo(
+    () =>
+      data.map((item) => ({
+        value: item,
+        label: getLabel(item),
+      })),
+    [data, getLabel]
+  );
+
   const filteredItem = options.filter((item) => {
     if (filter) {
       return filter(item.value);
     }
     if (query == "") return true;
-    return item.label?.toLowerCase().includes(query?.toLowerCase());
+    return item.label.toLowerCase().includes(query.toLowerCase());
   });
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && query == "") {
@@ -42,26 +48,19 @@ export function AutoComplete<T>({
       onChangeQuery("");
     }
   };
-  const getLabel = (value: T) => {
-    const item = options.find((item) => item.value == value);
-    if (item) {
-      return item.label;
-    }
-    return "";
-  };
 
-  const handleSelect = (value: T | null) => {
-    onChange(value);
-    if (value) onChangeQuery(getLabel(value));
-    else onChangeQuery("");
-  };
-  console.log(value);
   return (
-    <div className={classNames(" relative", className)}>
-      <Combobox value={value} onChange={handleSelect}>
+    <div className={classNames("flex flex-col relative", className)}>
+      <Combobox
+        value={value}
+        onChange={(value) => {
+          onChangeQuery(value ? getLabel(value) : "");
+          onChange(value);
+        }}
+      >
         <Combobox.Input
           onChange={(event) => onChangeQuery(event.target.value)}
-          className={classNames("control-input")}
+          className={"control-input"}
           value={query}
           autoComplete="off"
           placeholder={placeholder}
@@ -76,8 +75,8 @@ export function AutoComplete<T>({
               className={classNames(
                 " cursor-pointer w-full    px-2 py-1 font-semibold transition duration-200 rounded-sm ",
                 {
-                  "": value == option.value,
-                  " hover:text-gray-500 hover:bg-gray-200 bg-gray-50 ":
+                  "text-secondary bg-primary ": value == option.value,
+                  "text-muted hover:text-gray-500 hover:bg-gray-200 bg-gray-50 ":
                     value != option.value,
                 }
               )}
@@ -86,14 +85,12 @@ export function AutoComplete<T>({
             </Combobox.Option>
           ))}
           {options.length == 0 && (
-            <div className="text-gray-300 text-sm px-2 text-center  py-2 font-semibold   bg-gray-50">
-              No hay resultados 🤷‍♂️
+            <div className="text-muted text-sm px-2 text-center  py-2 font-semibold   bg-gray-50">
+              Results not found for "{query}"
             </div>
           )}
         </Combobox.Options>
       </Combobox>
-
-      {}
     </div>
   );
 }
