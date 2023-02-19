@@ -42,6 +42,7 @@ export function AutoComplete<T>({
     if (query == "") return true;
     return item.label.toLowerCase().includes(query.toLowerCase());
   });
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && query == "") {
       onChange(null);

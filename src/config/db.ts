@@ -5,20 +5,21 @@ export interface Entity {
   createdAt?: string;
 }
 
+export type Address = {
+  street?: string;
+  city?: string;
+  state?: string;
+};
 export interface Customer extends Entity {
   name: string;
-  address?: {
-    street?: string;
-    city?: string;
-    state?: string;
-  };
+  address?: Address;
   phone?: string;
 }
 
 export interface Item extends Entity {
   name: string;
   description?: string;
-  price?: number;
+  price: number;
 }
 export interface Invoice extends Entity {
   customerId?: number;

@@ -1,17 +1,13 @@
-import { Tab } from "@headlessui/react";
-import classNames from "classnames";
 import db, { Invoice } from "../../config/db";
 import { useTableQuery } from "../../hooks/useTableQuery";
-import { ask } from "@tauri-apps/api/dialog";
-import { Column, Table } from "../common/Table";
-import { TabView } from "../common/TabView";
+
+import { Column } from "../common/Table";
+
 import { z } from "zod";
 import { ZodSchema } from "zod/lib";
-import { Form } from "../common/Form";
-import { useState } from "react";
+
 import { TextInput } from "../inputs/TextInput";
 import { AutoCompleteInput } from "../inputs/AutocompleteInput";
-import { useTableDelete, useTableUpsert } from "../../hooks/useTableUpsert";
 import { Formatter } from "../../utils/formatter";
 import { ModuleView } from "../common/ModuleView";
 import { ItemsTableInput } from "../inputs/ItemsTableInput";
@@ -42,7 +38,13 @@ const defaultValues: Invoice = {
   jobDescription: undefined,
   paymentTerms: undefined,
   dueDate: undefined,
-  lines: [],
+  lines: [
+    {
+      itemId: 0,
+      quantity: 1,
+      price: 0,
+    },
+  ],
 };
 const columns: Column<Invoice>[] = [
   {
@@ -63,6 +65,10 @@ const columns: Column<Invoice>[] = [
   },
   {
     header: "Total",
+    getter: (item) =>
+      Formatter.formatCurrency(
+        item.lines.reduce((acc, line) => acc + line.price * line.quantity, 0)
+      ),
   },
 ];
 export const Invoices = () => {

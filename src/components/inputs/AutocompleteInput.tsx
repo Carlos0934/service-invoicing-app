@@ -21,13 +21,21 @@ export function AutoCompleteInput<T>({
 }: AutoCompleteInputProps<T>) {
   const {
     control,
+    watch,
     formState: { errors },
   } = useFormContext();
 
   const [query, setQuery] = useState("");
-
+  const internalValue = watch(name);
   const error = errors[name]?.message?.toString();
-
+  useEffect(() => {
+    if (internalValue && query == "") {
+      const value = props.data.find((item) => getValue(item) === internalValue);
+      if (value) {
+        setQuery(props.getLabel(value));
+      }
+    }
+  }, [internalValue, props.data]);
   return (
     <div className="control">
       {label && <label className="control-label">{label}</label>}

@@ -15,6 +15,7 @@ import { useTableDelete, useTableUpsert } from "../../hooks/useTableUpsert";
 import { Formatter } from "../../utils/formatter";
 import { Table as DexieTable } from "dexie";
 import { DeepPartial } from "react-hook-form";
+import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 interface Props<T> {
   title: string;
@@ -50,15 +51,15 @@ export const ModuleView = <T extends Entity>({
     {
       header: "",
       cell: (item) => (
-        <div className="flex justify-end ">
+        <div className="flex py-2 justify-center gap-2 ">
           <button
             onClick={() => {
               setSelectedRow(item);
               setTab(1);
             }}
-            className="btn"
+            className="px-2 text-blue-400 hover:text-blue-500 transition"
           >
-            Edit
+            <PencilIcon className="w-5 h-5" />
           </button>
 
           <button
@@ -71,9 +72,9 @@ export const ModuleView = <T extends Entity>({
 
               await deleteEntity(item.id);
             }}
-            className="btn text-red-400"
+            className="px-2 text-red-400 hover:text-red-500 transition"
           >
-            Delete
+            <TrashIcon className="w-5 h-5" />
           </button>
         </div>
       ),
@@ -88,10 +89,24 @@ export const ModuleView = <T extends Entity>({
       tabs={[
         {
           name: "All",
-          component: <Table data={data} columns={columns} />,
+          component: (
+            <>
+              <button
+                onClick={() => {
+                  setSelectedRow(defaultValues);
+                  setTab(1);
+                }}
+                className="btn block bg-blue-400 sticky bottom-0  text-gray-100 hover:bg-blue-500 transition  mb-5 "
+              >
+                Add New
+              </button>
+              <Table data={data} columns={columns} />
+            </>
+          ),
         },
         {
           name: "Form",
+
           component: (
             <Form
               title={getFormTitle(selectedRow)}
@@ -99,6 +114,8 @@ export const ModuleView = <T extends Entity>({
               values={selectedRow}
               onSubmit={async (data) => {
                 await upsert(data);
+                setTab(0);
+                setSelectedRow(defaultValues);
               }}
             >
               <div className="grid grid-cols-3 gap-5">{children}</div>
