@@ -18,8 +18,8 @@ export class Formatter {
 
   static formatAddress(address?: Address) {
     if (!address) return "";
-    return `${address.street || "N/A"}, ${address.city || "N/A"}, ${
-      address.state || "N/A"
+    return `${address.city || "N/A"}, ${address.street || "N/A"}, ${
+      address.zipCode || "N/A"
     }`;
   }
 }

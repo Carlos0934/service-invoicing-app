@@ -30,6 +30,7 @@ const defaultValues: Customer = {
     street: "",
     city: "",
     state: "",
+    zipCode: "",
   },
   phone: "",
 };
@@ -76,6 +77,8 @@ export const Customers = () => {
         <div className="grid grid-cols-3 gap-5">
           <TextInput label="City" name="address.city" />
           <TextInput label="State" name="address.state" />
+
+          <TextInput label="Zip Code" name="address.zipCode" />
           <div className="col-span-2">
             <TextareaInput label="Street" name="address.street" />
           </div>

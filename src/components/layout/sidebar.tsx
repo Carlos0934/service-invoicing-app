@@ -6,6 +6,7 @@ import {
 import { Link } from "react-router-dom";
 import { Routes } from "../../config/routes";
 const items = [
+  { name: "Dashboard", icon: NewspaperIcon, link: Routes.Dashboard },
   { name: "Invoices", icon: NewspaperIcon, link: Routes.Invoices },
   { name: "Customers", icon: UserGroupIcon, link: Routes.Customers },
   { name: "Items", icon: WrenchScrewdriverIcon, link: Routes.Products },

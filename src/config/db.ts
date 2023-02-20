@@ -9,6 +9,7 @@ export type Address = {
   street?: string;
   city?: string;
   state?: string;
+  zipCode?: string;
 };
 export interface Customer extends Entity {
   name: string;
