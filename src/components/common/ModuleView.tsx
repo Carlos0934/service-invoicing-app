@@ -5,16 +5,12 @@ import { useTableQuery } from "../../hooks/useTableQuery";
 import { ask } from "@tauri-apps/api/dialog";
 import { Column, Table } from "../common/Table";
 import { TabView } from "../common/TabView";
-import { z } from "zod";
 import { ZodSchema } from "zod/lib";
 import { Form } from "../common/Form";
 import { useState } from "react";
-import { TextInput } from "../inputs/TextInput";
-import { AutoCompleteInput } from "../inputs/AutocompleteInput";
 import { useTableDelete, useTableUpsert } from "../../hooks/useTableUpsert";
 import { Formatter } from "../../utils/formatter";
 import { Table as DexieTable } from "dexie";
-import { DeepPartial } from "react-hook-form";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 interface Props<T> {
@@ -25,6 +21,7 @@ interface Props<T> {
   children: React.ReactNode;
   table: DexieTable<T, number>;
   columns: Column<T>[];
+  actions?: (item: T) => React.ReactNode;
 }
 export const ModuleView = <T extends Entity>({
   table,
@@ -34,6 +31,7 @@ export const ModuleView = <T extends Entity>({
   defaultValues,
   children,
   columns: newColumns,
+  actions,
 }: Props<T>) => {
   const [selectedRow, setSelectedRow] = useState(defaultValues);
   const { data } = useTableQuery(table);
@@ -76,6 +74,8 @@ export const ModuleView = <T extends Entity>({
           >
             <TrashIcon className="w-5 h-5" />
           </button>
+
+          {actions && actions(item)}
         </div>
       ),
     },

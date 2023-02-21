@@ -58,9 +58,5 @@ const items: Item[] = [
 
 export const Dashboard = () => {
   const id = useMemo(() => Math.random(), []);
-  return (
-    <PDFViewer className="w-full h-full" key={id}>
-      <InvoiceDocument invoice={invoice} items={items} customer={customer} />
-    </PDFViewer>
-  );
+  return <></>;
 };

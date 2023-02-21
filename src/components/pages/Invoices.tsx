@@ -11,6 +11,11 @@ import { AutoCompleteInput } from "../inputs/AutocompleteInput";
 import { Formatter } from "../../utils/formatter";
 import { ModuleView } from "../common/ModuleView";
 import { ItemsTableInput } from "../inputs/ItemsTableInput";
+import { ArrowDownTrayIcon, PrinterIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
+import { Modal } from "../common/Modal";
+import { InvoiceDocument } from "../documents/InvoiceDocument";
+import { PDFViewer } from "@react-pdf/renderer";
 const schema: ZodSchema<Invoice> = z.object({
   id: z.number().optional(),
   date: z.string(),
@@ -73,41 +78,60 @@ const columns: Column<Invoice>[] = [
 ];
 export const Invoices = () => {
   const { data } = useTableQuery(db.customers);
+  const [invoiceToPrint, setInvoiceToPrint] = useState<number | undefined>();
   return (
-    <ModuleView
-      title="Invoices"
-      schema={schema}
-      defaultValues={defaultValues}
-      getFormTitle={(data) =>
-        data.id ? `Invoice #${Formatter.formatCode(data.id)}` : "New Invoice"
-      }
-      table={db.invoices}
-      columns={columns}
-    >
-      <section className="col-span-3">
-        <h4 className="font-semibold mb-2 text-lg">Invoice data</h4>
-        <div className="grid grid-cols-3 gap-5">
-          <TextInput label="Date" name="date" type={"date"} />
-          <TextInput label="SalesPerson" name="salesPerson" />
-          <TextInput label="Payment Terms" name="paymentTerms" />
-          <TextInput label="Due Date" name="dueDate" type={"date"} />
-          <TextInput label="Job Description" name="jobDescription" />
-          <AutoCompleteInput
-            data={data || []}
-            label="Customer"
-            name="customerId"
-            getLabel={(item) => item.name}
-            getValue={(item) => item.id}
-          />
-        </div>
-      </section>
+    <>
+      <Modal
+        open={!!invoiceToPrint}
+        onClose={() => setInvoiceToPrint(undefined)}
+      >
+        <PDFViewer className=" h-[750px] w-[500px]">
+          <InvoiceDocument invoiceId={invoiceToPrint} />
+        </PDFViewer>
+      </Modal>
+      <ModuleView
+        title="Invoices"
+        schema={schema}
+        defaultValues={defaultValues}
+        getFormTitle={(data) =>
+          data.id ? `Invoice #${Formatter.formatCode(data.id)}` : "New Invoice"
+        }
+        table={db.invoices}
+        columns={columns}
+        actions={(data) => (
+          <button
+            className="btn  text-gray-400 hover:text-gray-500 "
+            onClick={() => setInvoiceToPrint(data.id)}
+          >
+            <PrinterIcon className="h-5 w-5 " />
+          </button>
+        )}
+      >
+        <section className="col-span-3">
+          <h4 className="font-semibold mb-2 text-lg">Invoice data</h4>
+          <div className="grid grid-cols-3 gap-5">
+            <TextInput label="Date" name="date" type={"date"} />
+            <TextInput label="SalesPerson" name="salesPerson" />
+            <TextInput label="Payment Terms" name="paymentTerms" />
+            <TextInput label="Due Date" name="dueDate" type={"date"} />
+            <TextInput label="Job Description" name="jobDescription" />
+            <AutoCompleteInput
+              data={data || []}
+              label="Customer"
+              name="customerId"
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+            />
+          </div>
+        </section>
 
-      <section className="col-span-3 ">
-        <h4 className="font-semibold mb-2 text-lg"> Lines</h4>
-        <div className="grid grid-cols-3 gap-5">
-          <ItemsTableInput />
-        </div>
-      </section>
-    </ModuleView>
+        <section className="col-span-3 ">
+          <h4 className="font-semibold mb-2 text-lg"> Lines</h4>
+          <div className="grid grid-cols-3 gap-5">
+            <ItemsTableInput />
+          </div>
+        </section>
+      </ModuleView>
+    </>
   );
 };

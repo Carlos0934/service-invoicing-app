@@ -1,5 +1,4 @@
 import db, { Customer } from "../../config/db";
-import { useTableQuery } from "../../hooks/useTableQuery";
 
 import { Column } from "../common/Table";
 
@@ -7,7 +6,6 @@ import { z } from "zod";
 import { ZodSchema } from "zod/lib";
 
 import { TextInput } from "../inputs/TextInput";
-import { AutoCompleteInput } from "../inputs/AutocompleteInput";
 import { Formatter } from "../../utils/formatter";
 import { ModuleView } from "../common/ModuleView";
 import { TextareaInput } from "../inputs/TextareaInput";
@@ -19,6 +17,7 @@ const schema: ZodSchema<Customer> = z.object({
     street: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
+    zipCode: z.string().optional(),
   }),
   phone: z.string().optional(),
 });

@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Customer, Invoice, Item } from "../../config/db";
+import { FC, useCallback, useEffect, useState } from "react";
+import db, { Customer, Invoice, Item } from "../../config/db";
 import {
   Document,
   Page,
@@ -10,9 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import { Formatter } from "../../utils/formatter";
 interface Props {
-  invoice: Invoice;
-  customer: Customer;
-  items: Item[];
+  invoiceId?: number;
 }
 const styles = StyleSheet.create({
   page: {
@@ -174,7 +172,32 @@ const Table = <T extends object>({ headers, rows }: Table<T>) => {
   );
 };
 
-export const InvoiceDocument: FC<Props> = ({ invoice, customer, items }) => {
+export const InvoiceDocument: FC<Props> = ({ invoiceId }) => {
+  const [invoice, setInvoice] = useState<Invoice>();
+  const [customer, setCustomer] = useState<Customer>();
+  const [items, setItems] = useState<Item[]>();
+
+  const fetchInvoice = useCallback(async () => {
+    if (!invoiceId) return;
+
+    const invoice = await db.invoices.get(invoiceId);
+    const items = await db.items.toArray();
+    const customer = invoice?.customerId
+      ? await db.customers.get(invoice.customerId)
+      : null;
+    if (invoice && customer && items) {
+      setInvoice(invoice);
+      setCustomer(customer);
+      setItems(items);
+    }
+  }, [invoiceId]);
+  useEffect(() => {
+    fetchInvoice();
+  }, [fetchInvoice]);
+
+  if (!invoice || !customer || !items) {
+    return null;
+  }
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -301,11 +324,10 @@ export const InvoiceDocument: FC<Props> = ({ invoice, customer, items }) => {
         >
           <View
             style={{
-              display: "flex",
-              flexDirection: "column",
               gap: "10px",
-              width: "30%",
+              flexDirection: "column",
               marginLeft: "auto",
+              paddingRight: "40px",
             }}
           >
             <Text
